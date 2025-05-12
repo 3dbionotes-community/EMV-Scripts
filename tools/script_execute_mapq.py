@@ -18,16 +18,20 @@ from script_emv_setup import (
 
 def execute_mapq(map_filename, pdb, dir_path):
     """compute MapQ"""
+    mapq_path = os.path.join(dir_path, map_filename)
+    pdb_path = os.path.join(dir_path, pdb)
     os_command = f"python3 {TOOLS_PATH}mapq_chimera/mapq_cmd.py \
-        /home/bioinfo/.local/UCSF-Chimera64-1.14/ {dir_path}/{map_filename} {dir_path}/{pdb} np=8"
+        /home/bioinfo/.local/UCSF-Chimera64-1.14/ {mapq_path} {pdb_path} np=8"
     print("--> Map-Q command:", os_command)
     os.system(os_command)
 
 
 def convert_mapq_to_aapdb(mapq, aa_pdb, dir_path):
     """Save to aa.PDB file"""
+    mapq_path = os.path.join(dir_path, mapq)
+    pdb_path = os.path.join(dir_path, aa_pdb)
     os_command = f"python3 {TOOLS_PATH}convert_mapQvol_to_pdb.py \
-        {dir_path}/{mapq} {dir_path}/{aa_pdb}"
+        {mapq_path} {pdb_path}"
     os.system(os_command)
 
 
