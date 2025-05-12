@@ -70,9 +70,11 @@ def get_queue_cmmd_dependant(map_id, pdb_id, parent_job_id, method, script_name)
     """
     get queue command dependant
     """
+    # Use --kill-on-invalid-dep so the job is cancelled when its parent INIT job fails.
     cmmd = f"sbatch \
         --job-name={METHOD_INITIALS[method]}-{map_id} \
         --dependency=afterok:{parent_job_id} \
+        --kill-on-invalid-dep=yes \
         --output=/home/bioinfo/services/emv/logs/%j_%x.out \
         --error=/home/bioinfo/services/emv/logs/%j_%x.err \
         {os.path.join(TOOLS_PATH, script_name)} {map_id} {pdb_id}"
