@@ -45,8 +45,8 @@ if __name__ == "__main__":
     # Download EMDB metadata JSON file
     resolution, sampling, size, org_x, org_y, org_z = get_parameters(mapId, workpath)
 
-    # Download half-maps if available
-    hmap1, hmap2 = download_emdb_half_maps(mapId, workpath)
+    # Download half-maps if available (EST: call disabled, hmap1/hmap2 not used)
+    # hmap1, hmap2 = download_emdb_half_maps(mapId, workpath)
 
     # Download PDB model file
     inPdb = download_pdb_model(pdbId, workpath)
