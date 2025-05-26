@@ -4,7 +4,6 @@ import os
 import csv
 import requests
 from datetime import datetime, timedelta
-from rcsbsearch import rcsb_attributes as attrs, TextQuery
 
 WS_URL = "https://3dbionotes.cnb.csic.es/api/mappings/PDB/EMDB/"
 DAYS_INTERVAL = 7
@@ -13,25 +12,31 @@ FN_PDB_ENTRIES = "_new-all_entries_noem.txt"
 FN_EM_ENTRIES = "_new-all_entries_em.txt"
 FN_EMDB_PDB_ENTRIES = "_new-all_entries_mappings.csv"
 
+def to_iso(dt):
+    """Convert a datetime object to ISO format string."""
+    return dt.replace(microsecond=0).isoformat() + "Z"
 
-def getNewPDBEntries(d1, interval, withEM=False):
+def getNewPDBEntries(end_date, interval_days, withEM=False):
+    """Get new PDB entries released within the specified interval from the end date."""
 
-    iso1 = d1.replace(microsecond=0).isoformat()
+    start_date = end_date - timedelta(days=interval_days)
 
-    d0 = d1 - timedelta(days=interval)
-    iso0 = d0.replace(microsecond=0).isoformat()
+    # See https://www.ebi.ac.uk/pdbe/api/doc/search.html
+    params = {
+        "q": " AND ".join([
+            f"release_date:[{to_iso(start_date)} TO {to_iso(end_date)}]",
+            # "deposition_site:PDBE", # "PDBE" | "PDBJ" | "RCSB"
+            f"emdb_id:[* TO *]" if withEM else "-emdb_id:[* TO *]"
+        ]),
+        "rows": 10_000,
+        "fl": "pdb_id",
+    }
 
-    q2 = attrs.rcsb_accession_info.initial_release_date >= str(iso0+'Z')
-    q3 = attrs.rcsb_accession_info.initial_release_date <= str(iso1+'Z')
-    q4 = attrs.rcsb_entry_info.experimental_method != "EM"
-    q5 = attrs.rcsb_entry_info.experimental_method == "EM"
-    query = q2 & q3
-    if withEM:
-        query = query & q5
-    else:
-        query = query & q4
+    response = requests.get("https://www.ebi.ac.uk/pdbe/search/pdb/select", params=params)
+    response.raise_for_status()
+    data = response.json()
 
-    return list(query())
+    return [doc["pdb_id"] for doc in data["response"]["docs"]]
 
 
 def save2file(list, filename):

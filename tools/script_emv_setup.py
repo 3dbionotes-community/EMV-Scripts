@@ -12,9 +12,9 @@ from io import BytesIO
 import requests
 
 
-EMDB_EBI_REPOSITORY = "https://ftp.ebi.ac.uk/pub/databases/emdb/structures/"
-EMDB_WWPDB_REPOSITORY = "https://ftp.wwpdb.org/pub/emdb/structures/"
-EMDB_RCSB_REPOSITORY = "https://ftp.rcsb.org/pub/emdb/structures/"
+EMDB_EBI_REPOSITORY = "http://ftp.ebi.ac.uk/pub/databases/emdb/structures/"
+EMDB_WWPDB_REPOSITORY = "https://ftp.wwpdb.org/pub/emdb/structures/" # not used
+EMDB_RCSB_REPOSITORY = "https://ftp.rcsb.org/pub/emdb/structures/" # not used
 EMDB_EBI_JSON_REPOSITORY = "https://www.ebi.ac.uk/emdb/api/entry/"
 EMDB_FTP_SERVER = "ftp.ebi.ac.uk"
 EMDB_FTP_DIR = "pub/databases/emdb/structures/%s/other"
